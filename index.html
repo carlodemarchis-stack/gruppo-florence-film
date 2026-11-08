@@ -127,6 +127,7 @@
   .bar .nav { display: flex; align-items: center; border: 1px solid var(--line); }
   .bar .nav button { padding: .3rem .6rem; font-size: .9rem; line-height: 1; }
   .bar .nav button:disabled { opacity: .3; cursor: default; }
+  .bar .nav .restart { border-right: 1px solid var(--line); font-size: .95rem; }
   .bar .nav .pos { font-size: .72rem; letter-spacing: 2px; font-weight: 700; min-width: 4.6rem; text-align: center; color: var(--grey); }
   .bar .nav .pos b { color: var(--black); }
   .bar .years { display: flex; border: 1px solid var(--black); }
@@ -271,8 +272,8 @@
   <button class="brand" id="brandBtn" title="Back to the cover">Gruppo Florence <small>Report Film · Sustainability Report 2025</small></button>
 </div>
 <div class="bar bottom">
-  <button class="ico" id="restartBtn" title="Back to the cover, 2025 selected">↺</button>
   <div class="nav" id="nav">
+    <button id="restartBtn" class="restart" title="Back to the cover, 2025 selected">↺</button>
     <button id="prevCard" title="Previous card (←)">‹</button>
     <span class="pos" id="posBtn" title="Open the index"><b id="posNow">00</b> / <span id="posMax">12</span></span>
     <button id="nextCard" title="Next card (→)">›</button>
@@ -1221,13 +1222,14 @@ function render() {
   }
 }
 
-function setYear(y) { if (y === year) return; year = y; render(); fitSoon(); }
+function setYear(y) { if (y === year) return; year = y; render(); fitSoon(); writeHash(); }
 
 // ---------- CHROME: state control (slider, step, play), card nav, index, rail, keys ----------
 const stepYear = (d) => setYear(YEARS[Math.max(0, Math.min(YEARS.length - 1, YEARS.indexOf(year) + d))]);
 YEARS.forEach((y) => { const b = document.createElement('button'); b.textContent = y; b.dataset.y = y; b.onclick = () => setYear(y); $('years').appendChild(b); });
 
 const film = $('film');
+const initHash = location.hash;
 const cards = [...document.querySelectorAll('.card')];
 let cur = 0;
 const goCard = (i) => { i = Math.max(0, Math.min(cards.length - 1, i)); film.scrollTo({ left: cards[i].offsetLeft, behavior: 'smooth' }); };
@@ -1245,7 +1247,7 @@ $('brandBtn').onclick = () => goCard(0);
 $('restartBtn').onclick = () => { closeModal(); setYear(YEARS[YEARS.length - 1]); goCard(0); };
 document.querySelectorAll('.starts button').forEach((b) => { b.onclick = () => goCard(Number(b.dataset.card)); });
 // portrait phones: card arrows move to the top bar; landscape and desktop: everything in the bottom bar
-const placeNav = () => { const portrait = window.innerWidth <= 820 && window.innerHeight > window.innerWidth; const host = portrait ? document.querySelector('.bar.top') : document.querySelector('.bar.bottom'); if ($('nav').parentElement !== host) { if (portrait) { host.appendChild($('nav')); } else { host.insertBefore($('nav'), $('restartBtn').nextSibling); } } };
+const placeNav = () => { const portrait = window.innerWidth <= 820 && window.innerHeight > window.innerWidth; const host = portrait ? document.querySelector('.bar.top') : document.querySelector('.bar.bottom'); if ($('nav').parentElement !== host) { if (portrait) { host.appendChild($('nav')); } else { host.insertBefore($('nav'), host.firstChild); } } };
 placeNav(); window.addEventListener('resize', placeNav);
 // landscape: when a card overflows by less than a fifth, shrink its content so the whole card fits without scrolling
 function fitCards() {
@@ -1286,8 +1288,10 @@ $('prevCard').onclick = () => goCard(cur - 1);
 $('edgePrev').onclick = () => goCard(cur - 1);
 $('edgeNext').onclick = () => goCard(cur + 1);
 $('nextCard').onclick = () => goCard(cur + 1);
+function writeHash() { try { history.replaceState(null, '', '#' + cur + '/' + year); } catch (e) {} }
 function setCur(i) {
   cur = i;
+  writeHash();
   document.querySelectorAll('#index button').forEach((b, j) => b.classList.toggle('on', j === i));
   $('posNow').textContent = titles[i][0];
   refreshExplain();
@@ -1307,6 +1311,7 @@ document.addEventListener('keydown', (e) => {
 $('s2toggle').querySelectorAll('button').forEach((b) => b.onclick = () => { s2mode = b.dataset.m; $('s2toggle').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); render(); });
 $('wsToggle').querySelectorAll('button').forEach((b) => b.onclick = () => { wsFilter = b.dataset.f; render(); });
 $('gloss').innerHTML = GLOSSARY.map((g) => `<div><b>${g[0]}<small>${g[1]}</small></b><p>${g[2]}</p></div>`).join('');
+(() => { const m = /^#(\d+)\/(\d{4})$/.exec(initHash); if (m) { const yy = Number(m[2]); if (YEARS.includes(yy)) year = yy; const ci = Math.min(cards.length - 1, Math.max(0, Number(m[1]))); if (ci > 0) { cur = ci; requestAnimationFrame(() => { film.scrollTo({ left: cards[ci].offsetLeft, behavior: 'instant' }); setCur(ci); }); } } })();
 render();
 fitCards();
 fitCover();

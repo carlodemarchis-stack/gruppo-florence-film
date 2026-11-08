@@ -221,6 +221,12 @@
   .kv .k { font-size: .66rem; letter-spacing: 2px; text-transform: uppercase; color: var(--grey); font-weight: 700; }
   .kv .v { font-family: var(--serif); font-size: 1.6rem; line-height: 1.1; }
   .kv .s { font-size: .72rem; color: var(--grey); }
+  .gloss { columns: 3; column-gap: 2rem; }
+  @media (max-width: 1100px) { .gloss { columns: 2; } } @media (max-width: 820px) { .gloss { columns: 1; } }
+  .gloss div { break-inside: avoid; border-top: 1px solid var(--line); padding: .55rem 0 .7rem; }
+  .gloss b { font-family: var(--serif); font-weight: 400; font-size: 1.05rem; display: block; margin-bottom: .15rem; }
+  .gloss b small { font-family: var(--sans); font-size: .62rem; letter-spacing: 2px; text-transform: uppercase; color: var(--aux); font-weight: 700; margin-left: .5rem; }
+  .gloss p { margin: 0; font-size: .8rem; line-height: 1.45; color: var(--black); opacity: .85; }
   .tl { list-style: none; margin: 0; padding: 0; }
   .tl li { display: grid; grid-template-columns: 6rem 1fr; gap: .8rem; padding: .45rem 0; border-bottom: 1px solid var(--line); font-size: .82rem; line-height: 1.4; }
   .tl li .d { color: var(--aux); font-weight: 700; letter-spacing: 1px; font-size: .72rem; text-transform: uppercase; }
@@ -311,11 +317,18 @@
         <li>Economic value: pp. 57 to 58. 2023 is the sum of statutory accounts net of intercompany items; 2024 and 2025 are from the IFRS consolidated statements, so the bases are not strictly comparable. </li>
         <li>Economic value by division: Table 20, p. 58, the same two bases as above.</li>
         <li>Supply chain: Tables 23 to 30, pp. 62 to 64 (processing supplier assessments, spend coverage, acquisitions) and Table 9, p. 40 (material certifications by division).</li>
+        <li>Glossary: definitions written from GRI 2021, the GHG Protocol, SBTi, SAI and the certification bodies; not from the report.</li>
       </ul>
-      <h4>Known gaps</h4>
+      <h4>Known gaps and caveats</h4>
       <ul>
+        <li>People: job grade, age, training, pay, hires and exits are Italy only; foreign companies appear as headcount totals. Injury hours: 2023 estimated, 2024 excludes SNG, Logama and foreign companies, 2025 full scope.</li>
+        <li>Economic: 2023 is the sum of statutory accounts net of intercompany items; 2024 and 2025 come from the IFRS consolidated statements, so the bases are not strictly comparable.</li>
+        <li>Scope 2 location-based is given for 2025 only, so the market and location toggle applies to 2025.</li>
         <li>Scope 3 categories 9 to 12 not available for 2023; 8 and 13 to 15 not reported; category 1 limited to materials the group considers relevant.</li>
         <li>Renewable electricity: the letter says 100% of Italian sites, a footnote says close to full because of contract timing; the energy table is used.</li>
+        <li>Materials: the 2025 renewable share reflects a methodological refinement, so the 2024 to 2025 change is partly definitional.</li>
+        <li>Targets: progress bars and the straight-line path are computed here; the group publishes targets and absolute figures, not a trajectory.</li>
+        <li>Three-year line charts use a baseline just under the lowest value so that change is visible; every point carries its value.</li>
         <li>No figures by brand, by material or by laboratory; nothing below division level.</li>
       </ul>
       <h4>Identity</h4>
@@ -700,26 +713,13 @@
 
   <section class="card" id="c12">
     <div class="side">
-      <p class="n">12 · Method and gaps</p>
-      <h2>What this film can and cannot show</h2>
-      <p class="why">Every number here comes from the text layer of the English PDF of the 2025 report, 97 pages and 331,000 characters, read page by page. An earlier version of this film lacked the People chapter and the economic value table because the first reading tool truncated the document at about a third of its length; both are now included from pages 57 to 81.</p>
-      <p class="foot">Report: GRI Standards 2021 with reference; limited assurance by EY S.p.A. (ISAE 3000 Revised), some indicators excluded; impact materiality only; CSRD expected from FY2027.</p>
+      <p class="n">12 · Glossary</p>
+      <h2>The words the report uses, in plain terms</h2>
+      <p class="why">Sustainability reporting has its own vocabulary, most of it set by the GRI standards and the Greenhouse Gas Protocol. These are the terms that appear on the cards, in the order a reader is likely to meet them, with the standard or body behind each one. Method, sources and caveats are behind the ? button.</p>
+      <p class="foot">Definitions follow GRI 2021, the GHG Protocol Corporate Standard and Scope 2 Guidance, the SBTi Corporate Manual, SAI for SA8000 and the certification bodies named. Wording is mine.</p>
     </div>
     <div class="main">
-      <div class="panel">
-        <h3><span>Known gaps and caveats</span></h3>
-        <ul class="tl">
-          <li><span class="d">People</span><span>Job grade, age, training, pay, hires and exits are reported for Italy only; the foreign companies (Poland, Albania, Romania, Tunisia, Portugal) appear as headcount totals. Injury hours: 2023 estimated, 2024 excludes SNG, Logama and foreign companies, 2025 full scope.</span></li>
-          <li><span class="d">Economic</span><span>2023 is the sum of statutory accounts net of intercompany items; 2024 and 2025 come from the IFRS consolidated statements. The two bases are not strictly comparable.</span></li>
-          <li><span class="d">Scope 2</span><span>Location-based given for 2025 only; the market and location toggle therefore applies to 2025.</span></li>
-          <li><span class="d">Scope 3</span><span>Categories 9 to 12 not available for 2023; 8 and 13 to 15 not reported. Category 1 limited to materials the group considers relevant.</span></li>
-          <li><span class="d">Renewables</span><span>The letter says 100% of Italian sites; a footnote says close to full because of contract timing. The energy table is used.</span></li>
-          <li><span class="d">Materials</span><span>2025 renewable share reflects a methodological refinement, so the 2024 to 2025 change is partly definitional.</span></li>
-          <li><span class="d">Targets</span><span>Progress bars and the straight-line path are computed here; the group publishes targets and absolute figures, not a trajectory.</span></li>
-          <li><span class="d">Identity</span><span>Typography and palette follow gruppoflorence.it (Linotype Didot and DIN 2014 via Typekit; Bodoni Moda and Barlow stand in here). This is an independent reading of a public report, not a company publication.</span></li>
-        </ul>
-      </div>
-      <p class="foot">Source document: Gruppo Florence, Sustainability Report 2025 (English), gruppoflorence.it/wp-content/uploads/sites/2/2026/06/GF-VIEW.BdS_2025-ENG_Lo-Res-1-1.pdf. Compiled 8 November 2026.</p>
+      <div class="gloss" id="gloss"></div>
     </div>
   </section>
 
@@ -859,7 +859,38 @@ const EXPLAIN = [
   { t: 'Economic value generated and distributed', b: [['The idea', 'A simple version of the accounts: money earned (generated), then where it went: suppliers, employees, banks and owners, the state, community. What is left is retained.'], ['Negative retained value', 'When a group pays out more than it earned in the year, the retained line goes below zero. It is the sustainability-report way of showing a loss.'], ['Why it matters', 'It tells you whether the model pays for itself and who bears the cost when it does not. Finance costs are the price of the debt used to buy the laboratories.']] },
   { t: 'Economic value by division', b: [['Why split it', 'The group total hides which businesses are carrying which. Splitting by division shows where value is made and where it is lost.'], ['Why it matters', 'For anyone asking whether the aggregation model works, this is the table: it shows whether the losses are one bad bet or a pattern across the group.']] },
   { t: 'Supply chain', b: [['Façonisti and processing suppliers', 'The laboratories themselves subcontract steps (embroidery, washing, printing, assembly) to smaller workshops. The group audits them on labour and environment, as the brands audit the group.'], ['Significant impacts', 'Suppliers whose audit score falls in the worrying band; they get an action plan, and in the worst cases the relationship ends. A stricter checklist raises the count without the suppliers getting worse.'], ['Material certifications', 'GOTS for organic textiles, GRS for recycled content, RWS and RDS for wool and down with animal welfare rules. They travel with the material, so each division needs its own.'], ['Why it matters', 'This is where the reputational risk sits in Italian fashion: the workshop two tiers down. Coverage by spend, rather than by count, is how the group argues it is watching the right ones.']] },
-  { t: 'Method and sources', b: [['Where the numbers come from', 'All from the group\'s own 2025 report, read table by table. Nothing is modelled or interpolated.'], ['What is not here', 'Nothing by brand, by material or by single laboratory; the report does not publish that level.'], ['Why it matters', 'Knowing the limits of a dataset is part of reading it honestly.']] }
+  { t: 'Glossary', b: [['What this card is', 'Short definitions of the terms used across the film, with the standard behind each one.'], ['Where the method went', 'Sources, pages, caveats and the identity note are behind the ? button in the bottom bar.'], ['Why it matters', 'Half the difficulty of a sustainability report is the vocabulary; once the twenty or so terms are clear, the tables read like any other accounts.']] }
+];
+
+const GLOSSARY = [
+  ['GRI', 'Standard', 'Global Reporting Initiative, the most used set of rules for sustainability reports. "With reference" means the report follows GRI without claiming full compliance.'],
+  ['Limited assurance', 'Audit', 'An auditor (here EY) checks selected figures and states nothing came to its attention that is wrong. Weaker than the "reasonable" assurance given to financial accounts.'],
+  ['Materiality', 'GRI 3', 'The exercise that decides which topics a report must cover: those where the company has the biggest impact (impact materiality) and, under CSRD, those that affect its finances (double materiality).'],
+  ['CSRD', 'EU law', 'Corporate Sustainability Reporting Directive: the European rule that makes sustainability reporting mandatory and audited. Gruppo Florence expects to fall under it from the 2027 financial year.'],
+  ['Scope 1', 'GHG Protocol', 'Direct emissions from fuel the company burns itself: gas boilers, steam, company vehicles, refrigerant leaks.'],
+  ['Scope 2', 'GHG Protocol', 'Indirect emissions from purchased electricity, heat or steam. Reported two ways: location-based (grid average) and market-based (what the contracts say).'],
+  ['Market-based', 'Scope 2 Guidance', 'Scope 2 counted with the emission factor of the electricity actually bought. Certified renewable contracts count as zero or near zero.'],
+  ['Location-based', 'Scope 2 Guidance', 'Scope 2 counted with the average emission factor of the local grid, regardless of contracts. The physical view.'],
+  ['Scope 3', 'GHG Protocol', 'All other indirect emissions along the value chain, in 15 categories: purchased goods, capital goods, fuel production, transport, waste, travel, commuting, use and end of life.'],
+  ['Category 1', 'Scope 3', 'Purchased goods and services: for a manufacturer, the fabrics, leather and components it buys. Usually the largest category by far.'],
+  ['tCO2e', 'Unit', 'Tonnes of CO2 equivalent: all greenhouse gases converted to the warming effect of CO2 so they can be added together.'],
+  ['Intensity', 'GRI 305-4', 'Emissions or energy divided by an activity measure, here thousand euros of turnover. Separates efficiency from growth or shrinkage.'],
+  ['GJ', 'Unit', 'Gigajoule, the unit for energy of all kinds. 1 GJ is about 278 kWh of electricity or 28 litres of diesel.'],
+  ['Guarantee of origin', 'Energy', 'A certificate that a megawatt-hour was produced from renewable sources. Buying it is what makes electricity "renewable" in a market-based Scope 2.'],
+  ['SBTi', 'Climate', 'Science Based Targets initiative: validates company targets against the emission cuts needed for 1.5 °C. Near-term targets run to 2030 or 2033; a base year anchors them.'],
+  ['Water withdrawal', 'GRI 303', 'Water taken from any source. Discharge is what is returned; consumption is the difference, lost to evaporation or the product.'],
+  ['Water stress', 'GRI 303', 'Areas where water demand is high relative to supply, usually assessed with WRI Aqueduct. Much of Tuscany and the Marche qualify.'],
+  ['Renewable materials', 'GRI 301', 'Materials from sources that regenerate: natural fibres, hides, paper. Non-renewable covers synthetics, plastics and metals.'],
+  ['Diverted from disposal', 'GRI 306', 'Waste sent to reuse, recycling or other recovery. Disposed waste goes to landfill or incineration. Hazardous waste is the fraction with chemical risk.'],
+  ['SA8000', 'SAI', 'A social accountability certification audited site by site: working hours, pay, health and safety, no child or forced labour, freedom of association.'],
+  ['ISO 14001 and 45001', 'ISO', 'Management system certifications for environment and for health and safety. They certify the process, not a level of performance.'],
+  ['ZDHC', 'Chemicals', 'Zero Discharge of Hazardous Chemicals: an industry programme with a restricted substances list (MRSL) and a gateway for wastewater testing, used by most luxury brands.'],
+  ['GOTS, GRS, RWS, RDS', 'Materials', 'Global Organic Textile Standard; Global Recycled Standard; Responsible Wool and Responsible Down Standards (animal welfare). Each needs a chain-of-custody certificate per site.'],
+  ['Processing supplier', 'Supply chain', 'A workshop (façonista) that performs one step for a laboratory: embroidery, washing, printing, assembly. Gruppo Florence audits them as the brands audit it.'],
+  ['Significant impacts', 'GRI 414 and 308', 'Suppliers whose audit score falls in the band that triggers an action plan. The threshold depends on the checklist in use.'],
+  ['Economic value generated and distributed', 'GRI 201-1', 'Revenue, then where it went: suppliers (operating costs), employees, capital providers (interest, dividends), the state, community. The remainder is retained.'],
+  ['Injury rate', 'GRI 403', 'Recordable injuries per million hours worked, so sites of different size compare. "Recordable" means more than first aid.'],
+  ['Pay ratio', 'GRI 405-2', 'Women\'s average pay divided by men\'s at the same grade; 1.0 is parity. The annual total remuneration ratio compares the highest-paid person to the median employee.']
 ];
 
 // ---------- STATE ----------
@@ -1199,7 +1230,7 @@ const film = $('film');
 const cards = [...document.querySelectorAll('.card')];
 let cur = 0;
 const goCard = (i) => { i = Math.max(0, Math.min(cards.length - 1, i)); film.scrollTo({ left: cards[i].offsetLeft, behavior: 'smooth' }); };
-const titles = [['00', 'Cover', 'index and the year control'], ['01', 'Emissions', 'Scope 1, 2, 3 and 11 Scope 3 categories'], ['02', 'Energy', '10 sources, renewable share'], ['03', 'Intensity', 'carbon, energy, turnover per head'], ['04', 'Water', 'sources, discharges, stressed areas'], ['05', 'Materials and waste', '39 waste streams by fate'], ['06', 'Targets', 'SBTi progress, SA8000, milestones'], ['07', 'Structure', 'divisions, board, group'], ['08', 'People', 'workforce, pay ratios, training, safety'], ['09', 'Economic value', 'generated, distributed, by country'], ['10', 'Economic value by division', 'ready-to-wear, footwear, leather goods, intermediate processing'], ['11', 'Supply chain', 'supplier assessments, spend coverage, certifications'], ['12', 'Method', 'sources, scope and caveats']];
+const titles = [['00', 'Cover', 'index and the year control'], ['01', 'Emissions', 'Scope 1, 2, 3 and 11 Scope 3 categories'], ['02', 'Energy', '10 sources, renewable share'], ['03', 'Intensity', 'carbon, energy, turnover per head'], ['04', 'Water', 'sources, discharges, stressed areas'], ['05', 'Materials and waste', '39 waste streams by fate'], ['06', 'Targets', 'SBTi progress, SA8000, milestones'], ['07', 'Structure', 'divisions, board, group'], ['08', 'People', 'workforce, pay ratios, training, safety'], ['09', 'Economic value', 'generated, distributed, by country'], ['10', 'Economic value by division', 'ready-to-wear, footwear, leather goods, intermediate processing'], ['11', 'Supply chain', 'supplier assessments, spend coverage, certifications'], ['12', 'Glossary', 'the report\'s terms in plain words']];
 const mkIndex = (host, from) => titles.slice(from).forEach((t, j) => { const i = j + from; const b = document.createElement('button'); b.innerHTML = `<span class="k">${t[0]}</span><span class="t">${t[1]}</span><span class="s">${t[2]}</span>`; b.onclick = () => { closeModal(); goCard(i); }; host.appendChild(b); });
 mkIndex($('index'), 0);
 mkIndex($('coverIndex'), 1);
@@ -1273,6 +1304,7 @@ document.addEventListener('keydown', (e) => {
 });
 $('s2toggle').querySelectorAll('button').forEach((b) => b.onclick = () => { s2mode = b.dataset.m; $('s2toggle').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); render(); });
 $('wsToggle').querySelectorAll('button').forEach((b) => b.onclick = () => { wsFilter = b.dataset.f; render(); });
+$('gloss').innerHTML = GLOSSARY.map((g) => `<div><b>${g[0]}<small>${g[1]}</small></b><p>${g[2]}</p></div>`).join('');
 render();
 fitCards();
 fitCover();

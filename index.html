@@ -79,6 +79,16 @@
   .edge[disabled] { opacity: 0; pointer-events: none; }
   @media (hover: none) { .edge { opacity: .22; } }
   @media (max-width: 820px) { .edge { width: 2rem; height: 3.6rem; font-size: 1.8rem; } }
+  .bar .explain { border: 1px solid var(--black); padding: .5rem .9rem; font-size: .72rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; white-space: nowrap; }
+  .bar .explain:hover { background: var(--black); color: var(--cream); }
+  @media (max-width: 820px) { .bar .explain { padding: .5rem .6rem; font-size: .62rem; letter-spacing: 1px; } }
+  #mExplain .n { color: var(--aux); font-size: .68rem; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; margin: 0 0 .5rem; }
+  #mExplain h3 { margin-bottom: .9rem; }
+  .ex { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem 1.6rem; }
+  .ex div { border-top: 2px solid var(--aux); padding-top: .5rem; }
+  .ex h4 { margin: 0 0 .35rem !important; font-size: .68rem !important; }
+  .ex p { margin: 0 !important; font-size: .9rem !important; line-height: 1.5 !important; }
+  .exfoot { color: var(--grey); font-size: .74rem !important; margin: 1.2rem 0 0 !important; }
   /* modal: index and method */
   .modal { position: fixed; inset: 0; z-index: 30; background: rgba(58,56,54,.55); display: none; align-items: center; justify-content: center; padding: 1.5rem; }
   @media (max-width: 820px) { .modal { padding: 0; align-items: flex-end; } .modal .box { max-height: 88dvh; padding: 1.5rem 1rem calc(1.5rem + env(safe-area-inset-bottom)); } .modal .index { grid-template-columns: 1fr; gap: 0; } }
@@ -257,6 +267,7 @@
   <span class="hint">↑ ↓ year · ← → cards</span>
   <div class="spacer"></div>
   <div class="years" id="years" role="group" aria-label="Report year"></div>
+  <button class="explain" id="explainBtn" title="Plain-language guide to this card">Explain it to me</button>
   <button class="ico" id="helpBtn" title="Method and sources">?</button>
   <button class="ico" id="fsBtn" title="Full screen">⛶</button>
 </div>
@@ -268,6 +279,12 @@
     <div id="mIndex">
       <h3>Index</h3>
       <div class="index" id="index"></div>
+    </div>
+    <div id="mExplain">
+      <p class="n" id="exKicker">Explain it to me</p>
+      <h3 id="exTitle">—</h3>
+      <div class="ex" id="exBody"></div>
+      <p class="exfoot">Plain words for readers who do not work in sustainability. The numbers are on the card; this window explains what they measure and why anyone outside the ESG team should care.</p>
     </div>
     <div id="mHelp">
       <h3>Method and sources</h3>
@@ -818,6 +835,23 @@ const D = {
   }
 };
 
+// ---------- PLAIN-LANGUAGE GUIDE, one entry per card ----------
+const EXPLAIN = [
+  { t: 'What a sustainability report is', b: [['What it is', 'A yearly account, next to the financial accounts, of how a company treats the planet, its people and its suppliers. Gruppo Florence follows the GRI standard, the most used rulebook for these reports, and an auditor (EY) checked part of it.'], ['Why a factory group writes one', 'The luxury brands that buy from these laboratories are legally required to report on their own supply chains from 2027. They need their suppliers\' numbers, so a supplier that reports well becomes easier to keep.'], ['How to read this film', 'Pick a year and every chart redraws. Nothing is estimated: where the report has no number the card says so. Each card is one chapter of the report.']] },
+  { t: 'Emissions, and the three scopes', b: [['Scope 1', 'Greenhouse gas the company burns itself: gas for heating and steam in the laboratories, diesel in company vehicles.'], ['Scope 2', 'Emissions from the electricity it buys. Two ways to count it: by the local grid average (location-based) or by the contracts signed (market-based), where certified renewable power counts as near zero.'], ['Scope 3', 'Everything upstream and downstream that the company does not own: the fabric and leather it buys, transport, commuting, waste. For a manufacturer this is almost the whole footprint.'], ['Why it matters', 'Brands set targets on their own Scope 3, and a supplier\'s Scope 1 and 2 are a slice of it. A supplier that cuts emissions is helping its customers hit their numbers.']] },
+  { t: 'Energy', b: [['What is measured', 'All the energy used, in gigajoules: electricity, natural gas, diesel, petrol, LPG. One gigajoule is roughly the energy in 28 litres of diesel.'], ['Renewable share', 'The part of the electricity bought under contracts certified as renewable (guarantees of origin). It is a purchasing choice, not a change in the plant.'], ['Why it matters', 'Switching contracts cuts reported Scope 2 quickly; cutting gas for heat is slower and needs new equipment. The split tells you which kind of progress you are looking at.']] },
+  { t: 'Intensity', b: [['What intensity is', 'Emissions or energy divided by money earned: tonnes of CO2 per thousand euros of turnover. It removes the effect of growing or shrinking.'], ['Why it matters', 'A company can emit less because it sells less. Intensity shows whether it got cleaner, or just smaller. Turnover per employee does the same job for productivity.']] },
+  { t: 'Water', b: [['Withdrawal, discharge, consumption', 'Withdrawal is what is taken from the mains or wells; discharge is what goes back to the sewer; consumption is the difference, the water that evaporates or leaves inside the product.'], ['Water-stressed areas', 'Places where demand already strains local supply. Tuscany and the Marche count in the tool most companies use (WRI Aqueduct), so a lot of the group\'s water is drawn there.'], ['Why it matters', 'Washing, dyeing and finishing are the thirsty steps in fashion. Brands increasingly ask suppliers for water figures by site.']] },
+  { t: 'Materials and waste', b: [['Renewable materials', 'Fibres and leathers that regrow: cotton, wool, silk, linen, cashmere, hides, paper. Non-renewable means synthetics, plastics, metal parts.'], ['Diverted versus disposed', 'Waste sent to recycling or recovery (diverted) against waste sent to landfill or incineration (disposed). Hazardous waste is the small fraction with chemicals in it.'], ['Why it matters', 'Offcuts and unsold stock are the industry\'s visible problem; the ratio of diverted to disposed is the simplest measure of how seriously a factory takes it.']] },
+  { t: 'Targets, SBTi and SA8000', b: [['SBTi', 'The Science Based Targets initiative checks that a company\'s emission targets match what climate science says is needed. Gruppo Florence has committed to a near-term target.'], ['SA8000', 'A certification of working conditions: hours, pay, health and safety, no forced or child labour, freedom to join a union. Audited site by site, renewed regularly.'], ['Why it matters', 'These are the two badges brands look for first on a supplier: one for climate, one for labour. The plan to cover every Italian site by 2027 is the group\'s central promise.']] },
+  { t: 'Structure and governance', b: [['Divisions and laboratories', 'The group is a holding over dozens of family manufacturing companies it acquired, grouped into business units: ready-to-wear, footwear, leather goods, intermediate processing (embroidery, dyeing, finishing for the others).'], ['Governance', 'Who decides: the board of the parent company, a supply chain committee, an ESG function. Reports state whether the board itself oversees sustainability, because the European rules will ask.'], ['Why it matters', 'Board composition and ESG oversight are what regulators and investors read first; for a private-equity owned group they signal how far sustainability sits from the real decisions.']] },
+  { t: 'People', b: [['Who is counted', 'Employees at 31 December, by country, gender and grade. In Italy manual workers are the majority and most of them are women, which is typical of garment making.'], ['Pay ratio and training hours', 'Women\'s average pay as a share of men\'s at each grade (1.0 is parity), and training hours per head. Injury rate is injuries per million hours worked, so plants of different sizes can be compared.'], ['Why it matters', 'Labour is the risk brands worry about most in Italian fashion after the 2024 court cases on subcontracting. These tables are the evidence of how the group treats its own people.']] },
+  { t: 'Economic value generated and distributed', b: [['The idea', 'A simple version of the accounts: money earned (generated), then where it went: suppliers, employees, banks and owners, the state, community. What is left is retained.'], ['Negative retained value', 'When a group pays out more than it earned in the year, the retained line goes below zero. It is the sustainability-report way of showing a loss.'], ['Why it matters', 'It tells you whether the model pays for itself and who bears the cost when it does not. Finance costs are the price of the debt used to buy the laboratories.']] },
+  { t: 'Economic value by division', b: [['Why split it', 'The group total hides which businesses are carrying which. Splitting by division shows where value is made and where it is lost.'], ['Why it matters', 'For anyone asking whether the aggregation model works, this is the table: it shows whether the losses are one bad bet or a pattern across the group.']] },
+  { t: 'Supply chain', b: [['Façonisti and processing suppliers', 'The laboratories themselves subcontract steps (embroidery, washing, printing, assembly) to smaller workshops. The group audits them on labour and environment, as the brands audit the group.'], ['Significant impacts', 'Suppliers whose audit score falls in the worrying band; they get an action plan, and in the worst cases the relationship ends. A stricter checklist raises the count without the suppliers getting worse.'], ['Material certifications', 'GOTS for organic textiles, GRS for recycled content, RWS and RDS for wool and down with animal welfare rules. They travel with the material, so each division needs its own.'], ['Why it matters', 'This is where the reputational risk sits in Italian fashion: the workshop two tiers down. Coverage by spend, rather than by count, is how the group argues it is watching the right ones.']] },
+  { t: 'Method and sources', b: [['Where the numbers come from', 'All from the group\'s own 2025 report, read table by table. Nothing is modelled or interpolated.'], ['What is not here', 'Nothing by brand, by material or by single laboratory; the report does not publish that level.'], ['Why it matters', 'Knowing the limits of a dataset is part of reading it honestly.']] }
+];
+
 // ---------- STATE ----------
 let year = 2025;
 let s2mode = 'mb';
@@ -1160,7 +1194,7 @@ const mkIndex = (host, from) => titles.slice(from).forEach((t, j) => { const i =
 mkIndex($('index'), 0);
 mkIndex($('coverIndex'), 1);
 // modal: index (from the card counter) and method (from ?)
-function openModal(which) { $('mIndex').style.display = which === 'index' ? '' : 'none'; $('mHelp').style.display = which === 'help' ? '' : 'none'; $('modal').classList.add('open'); }
+function openModal(which) { $('mIndex').style.display = which === 'index' ? '' : 'none'; $('mHelp').style.display = which === 'help' ? '' : 'none'; $('mExplain').style.display = which === 'explain' ? '' : 'none'; if (which === 'explain') { const e = EXPLAIN[cur] || EXPLAIN[0]; $('exKicker').textContent = 'Explain it to me · card ' + titles[cur][0] + ' · ' + titles[cur][1]; $('exTitle').textContent = e.t; $('exBody').innerHTML = e.b.map((x) => `<div><h4>${x[0]}</h4><p>${x[1]}</p></div>`).join(''); } $('modal').classList.add('open'); }
 function closeModal() { $('modal').classList.remove('open'); }
 $('posBtn').onclick = () => openModal('index');
 $('brandBtn').onclick = () => goCard(0);
@@ -1196,6 +1230,7 @@ let fitT; const fitSoon = () => { clearTimeout(fitT); fitT = setTimeout(() => { 
 window.addEventListener('resize', fitSoon);
 document.querySelectorAll('details.rows').forEach((d) => d.addEventListener('toggle', fitSoon));
 $('helpBtn').onclick = () => openModal('help');
+$('explainBtn').onclick = () => openModal('explain');
 $('modalClose').onclick = closeModal;
 $('modal').onclick = (e) => { if (e.target === $('modal')) closeModal(); };
 $('fsBtn').onclick = () => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); };

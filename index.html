@@ -643,7 +643,7 @@
       <p class="n">10 · Economic value by division</p>
       <h2>In <b class="yr">—</b> <b id="buNeg">—</b> of the four divisions retained less than they distributed; ready-to-wear generated <b id="buRtwShare">—</b> of the group's value</h2>
       <p class="why">The group's negative retained value is not one division's problem. Ready-to-wear held its revenue at around 470 million across the three years while its distributed value rose 40 million, so it turned negative in 2025. Footwear lost 40% of its value generated in 2024 and has retained a loss of 14 to 17 million since. Intermediate processing shrank by four fifths after 2023 as work moved inside the garment divisions. Leather goods doubled with acquisitions and still retains a loss.</p>
-      <p class="foot">Source: Table 20, EUR thousand, p. 58. Divisions as the report defines them: RTW, IP (intermediate processing and related), Footwear, Leather Goods. Negative retained value means distribution exceeded generation.</p>
+      <p class="foot">Source: Table 20, EUR thousand, p. 58. Divisions as the report defines them: ready-to-wear, intermediate processing (and related), footwear, leather goods. Negative retained value means distribution exceeded generation.</p>
     </div>
     <div class="main">
       <div class="grid2">
@@ -1088,7 +1088,7 @@ function render() {
     { cls: 'grp', c: ['Board of Directors, members', 10, 11, 11] }, { cls: 'sub', c: ['Women', 2, 3, 4] }, { cls: 'sub', c: ['Men', 8, 8, 7] }, { cls: 'sub', c: ['Age 30 to 50', 4, 4, 4] }, { cls: 'sub', c: ['Over 50', 6, 7, 7] },
     { cls: 'grp', c: ['Supply Chain Committee, members', '—', 6, 6] }, { cls: 'sub', c: ['Women', '—', 2, 2] }, { cls: 'sub', c: ['Men', '—', 4, 4] }
   ]);
-  $('groupKv').innerHTML = [['Turnover', fmt(D.group.turnover_k[y] / 1000, 1) + ' m€', 'economic value generated'], ['Employees', fmt(D.group.employees[y]), 'year end'], ['Divisions', y === 2025 ? '37' : 'n/r', y === 2025 ? '25 RTW · 6 IP · 3 shoes · 3 leather' : 'reported for 2025'], ['Brands', y === 2025 ? '100+' : 'n/r', 'international luxury brands'], ['Regions', '9', 'Italian regions, plus plants abroad']].map((k) => `<div><div class="k">${k[0]}</div><div class="v">${k[1]}</div><div class="s">${k[2]}</div></div>`).join('');
+  $('groupKv').innerHTML = [['Turnover', fmt(D.group.turnover_k[y] / 1000, 1) + ' m€', 'economic value generated'], ['Employees', fmt(D.group.employees[y]), 'year end'], ['Divisions', y === 2025 ? '37' : 'n/r', y === 2025 ? '25 ready-to-wear · 6 intermediate · 3 footwear · 3 leather goods' : 'reported for 2025'], ['Brands', y === 2025 ? '100+' : 'n/r', 'international luxury brands'], ['Regions', '9', 'Italian regions, plus plants abroad']].map((k) => `<div><div class="k">${k[0]}</div><div class="v">${k[1]}</div><div class="s">${k[2]}</div></div>`).join('');
 
   // 08 people
   const P = D.people;
@@ -1199,7 +1199,7 @@ const film = $('film');
 const cards = [...document.querySelectorAll('.card')];
 let cur = 0;
 const goCard = (i) => { i = Math.max(0, Math.min(cards.length - 1, i)); film.scrollTo({ left: cards[i].offsetLeft, behavior: 'smooth' }); };
-const titles = [['00', 'Cover', 'index and the year control'], ['01', 'Emissions', 'Scope 1, 2, 3 and 11 Scope 3 categories'], ['02', 'Energy', '10 sources, renewable share'], ['03', 'Intensity', 'carbon, energy, turnover per head'], ['04', 'Water', 'sources, discharges, stressed areas'], ['05', 'Materials and waste', '39 waste streams by fate'], ['06', 'Targets', 'SBTi progress, SA8000, milestones'], ['07', 'Structure', 'divisions, board, group'], ['08', 'People', 'workforce, pay ratios, training, safety'], ['09', 'Economic value', 'generated, distributed, by country'], ['10', 'Economic value by division', 'RTW, footwear, leather goods, intermediate'], ['11', 'Supply chain', 'supplier assessments, spend coverage, certifications'], ['12', 'Method', 'sources, scope and caveats']];
+const titles = [['00', 'Cover', 'index and the year control'], ['01', 'Emissions', 'Scope 1, 2, 3 and 11 Scope 3 categories'], ['02', 'Energy', '10 sources, renewable share'], ['03', 'Intensity', 'carbon, energy, turnover per head'], ['04', 'Water', 'sources, discharges, stressed areas'], ['05', 'Materials and waste', '39 waste streams by fate'], ['06', 'Targets', 'SBTi progress, SA8000, milestones'], ['07', 'Structure', 'divisions, board, group'], ['08', 'People', 'workforce, pay ratios, training, safety'], ['09', 'Economic value', 'generated, distributed, by country'], ['10', 'Economic value by division', 'ready-to-wear, footwear, leather goods, intermediate processing'], ['11', 'Supply chain', 'supplier assessments, spend coverage, certifications'], ['12', 'Method', 'sources, scope and caveats']];
 const mkIndex = (host, from) => titles.slice(from).forEach((t, j) => { const i = j + from; const b = document.createElement('button'); b.innerHTML = `<span class="k">${t[0]}</span><span class="t">${t[1]}</span><span class="s">${t[2]}</span>`; b.onclick = () => { closeModal(); goCard(i); }; host.appendChild(b); });
 mkIndex($('index'), 0);
 mkIndex($('coverIndex'), 1);

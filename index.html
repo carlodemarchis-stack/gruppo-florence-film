@@ -45,6 +45,12 @@
 
   /* cover */
   .cover { grid-template-columns: 1fr; padding-top: 5rem; }
+  .cover .summary .n { color: var(--aux); font-size: .7rem; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; margin: 0 0 .7rem; }
+  .cover .summary .ycols { height: 120px; }
+  .cover .summary .grid2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cover .summary .foot { font-size: .74rem; color: var(--grey); line-height: 1.5; margin: .4rem 0 0; }
+  @media (orientation: landscape) and (min-width: 821px) { .cover { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: start; padding-top: 4rem; } .cover h1 { font-size: clamp(2rem, 3.4vw, 3.2rem); margin-bottom: 1rem; } .cover .lead { font-size: .95rem; margin-bottom: 1.2rem; } .cover .summary { padding-top: 2.6rem; } .cover .index { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .2rem 1.2rem; } .cover .index button { padding: .4rem 0; } .cover .index .t { font-size: .95rem; } .cover .index .s { display: none; } }
+  @media (orientation: portrait), (max-width: 820px) { .cover .summary { display: none; } }
   .cover .kicker { color: var(--aux); font-size: .72rem; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; margin: 0 0 1.2rem; }
   .cover h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(2.2rem, 5vw, 4.4rem); line-height: 1.02; letter-spacing: .01em; text-transform: uppercase; margin: 0 0 1.4rem; max-width: 20ch; }
   .cover .lead { font-size: 1.05rem; line-height: 1.6; max-width: 46rem; margin: 0 0 2rem; }
@@ -251,11 +257,21 @@
 <main class="film" id="film">
 
   <section class="card cover" id="c0">
-    <div>
+    <div class="cv">
       <p class="kicker">Auxilium · Valore Italia · one state, every table</p>
       <h1>The 2025 sustainability report, card by card</h1>
       <p class="lead">Gruppo Florence groups 39 Italian laboratories that make ready-to-wear, footwear, leather goods and intermediate processing for the luxury brands. Its 2025 sustainability report covers three years of a group that grew by acquisition and then slowed with the market: 4,627 people, 588 million euros of economic value generated, Scope 1 and 2 emissions down 43% while Scope 3 rose to 383,000 tonnes, water and materials following the perimeter, SA8000 spreading across the sites, and a cost base that outran revenue for two years running. Each card below takes one chapter of the report and lets you read it year by year.</p>
       <div class="index" id="coverIndex"></div>
+    </div>
+    <div class="main summary" id="summary">
+      <p class="n">Three years in four numbers · <span class="yr">—</span> selected</p>
+      <div class="grid2">
+        <div class="panel"><h3><span>Economic value generated, EUR million</span><span class="v" id="sGen">—</span></h3><div class="ycols" id="sGenCols"></div></div>
+        <div class="panel"><h3><span>Employees at year end</span><span class="v" id="sEmp">—</span></h3><div class="ycols" id="sEmpCols"></div></div>
+        <div class="panel"><h3><span>Scope 1 and 2, tCO2e (market-based)</span><span class="v" id="sS12">—</span></h3><div class="ycols" id="sS12Cols"></div></div>
+        <div class="panel"><h3><span>Scope 3, thousand tCO2e</span><span class="v" id="sS3">—</span></h3><div class="ycols" id="sS3Cols"></div></div>
+      </div>
+      <p class="foot">Click a column to change the year for every card. Value generated down 15% while headcount rose 26%; Scope 1 and 2 down 43% through renewable electricity contracts while Scope 3, almost all purchased materials, rose 26%.</p>
     </div>
   </section>
 
@@ -941,6 +957,14 @@ function render() {
   ycols($('saCols'), { 2023: null, 2024: D.sa8000[2024], 2025: D.sa8000[2025] }, { fmtv: (v) => v + ' sites' });
   const sa = $('saCols'); const tgt = document.createElement('div'); tgt.className = 'ycol'; tgt.innerHTML = `<span class="v">40 target</span><div class="b" style="height:100%;background:transparent;border:2px dashed ${C.yellow}"></div><span class="y">2026</span>`; sa.appendChild(tgt);
   sa.querySelectorAll('.ycol .b').forEach((b, i) => { if (i < 3) b.style.height = (([null, 13, 22][i] || 0) / 40 * 100) + '%'; });
+
+  // 00 cover summary
+  const s3t = (yy) => D.scope3.reduce((t, c) => t + (c[1][yy] || 0), 0) / 1000;
+  const s12 = (yy) => D.scope1[yy] + D.scope2mb[yy];
+  $('sGen').textContent = fmt(D.ev.gen[y] / 1000, 1); ycols($('sGenCols'), Object.fromEntries(YEARS.map((yy) => [yy, D.ev.gen[yy] / 1000])), { fmtv: (v) => fmt(v, 1) });
+  $('sEmp').textContent = fmt(D.group.employees[y]); ycols($('sEmpCols'), D.group.employees);
+  $('sS12').textContent = fmt(s12(y)); ycols($('sS12Cols'), Object.fromEntries(YEARS.map((yy) => [yy, s12(yy)])));
+  $('sS3').textContent = fmt(s3t(y), 0); ycols($('sS3Cols'), Object.fromEntries(YEARS.map((yy) => [yy, s3t(yy)])), { fmtv: (v) => fmt(v, 0) });
 
   // 07 structure
   hbars($('divBars'), D.divisions.map((d) => ({ key: d[0], name: d[0], v: d[1], color: C.aux, tip: `<span class="k">${d[0]}</span>${d[1]} divisions` })));

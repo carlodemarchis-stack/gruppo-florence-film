@@ -69,6 +69,13 @@
   .bar .ico:hover, .bar .nav button:hover:not(:disabled), .bar .years button:hover { background: var(--black); color: var(--cream); }
   .bar .nav .pos { cursor: pointer; }
   .bar .nav .pos:hover b { color: var(--aux); }
+  /* side arrows: a quiet hint that the cards run sideways */
+  .edge { position: fixed; top: 50%; transform: translateY(-50%); z-index: 9; width: 2.6rem; height: 4.5rem; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 2.2rem; line-height: 1; color: var(--black); opacity: .28; transition: opacity .25s, background .25s; padding: 0; }
+  .edge.left { left: 0; border-radius: 0 3px 3px 0; } .edge.right { right: 0; border-radius: 3px 0 0 3px; }
+  .edge:hover { opacity: 1; background: rgba(240,240,230,.9); }
+  .edge[disabled] { opacity: 0; pointer-events: none; }
+  @media (hover: none) { .edge { opacity: .22; } }
+  @media (max-width: 820px) { .edge { width: 2rem; height: 3.6rem; font-size: 1.8rem; } }
   /* modal: index and method */
   .modal { position: fixed; inset: 0; z-index: 30; background: rgba(58,56,54,.55); display: none; align-items: center; justify-content: center; padding: 1.5rem; }
   @media (max-width: 820px) { .modal { padding: 0; align-items: flex-end; } .modal .box { max-height: 88dvh; padding: 1.5rem 1rem calc(1.5rem + env(safe-area-inset-bottom)); } .modal .index { grid-template-columns: 1fr; gap: 0; } }
@@ -216,6 +223,8 @@
   <button class="ico" id="helpBtn" title="Method and sources">?</button>
   <button class="ico" id="fsBtn" title="Full screen">⛶</button>
 </div>
+<button class="edge left" id="edgePrev" aria-label="Previous card">‹</button>
+<button class="edge right" id="edgeNext" aria-label="Next card">›</button>
 <div class="modal" id="modal" role="dialog" aria-modal="true">
   <div class="box">
     <button class="close" id="modalClose" title="Close (Esc)">×</button>
@@ -1123,12 +1132,14 @@ $('modal').onclick = (e) => { if (e.target === $('modal')) closeModal(); };
 $('fsBtn').onclick = () => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); };
 $('posMax').textContent = titles[cards.length - 1][0];
 $('prevCard').onclick = () => goCard(cur - 1);
+$('edgePrev').onclick = () => goCard(cur - 1);
+$('edgeNext').onclick = () => goCard(cur + 1);
 $('nextCard').onclick = () => goCard(cur + 1);
 function setCur(i) {
   cur = i;
   document.querySelectorAll('#index button').forEach((b, j) => b.classList.toggle('on', j === i));
   $('posNow').textContent = titles[i][0];
-  $('prevCard').disabled = i === 0;
+  $('prevCard').disabled = i === 0; $('edgePrev').disabled = i === 0; $('edgeNext').disabled = i === cards.length - 1;
   $('nextCard').disabled = i === cards.length - 1;
 }
 const io = new IntersectionObserver((es) => { es.forEach((e) => { if (e.isIntersecting) setCur(cards.indexOf(e.target)); }); }, { root: film, threshold: 0.55 });

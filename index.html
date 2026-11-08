@@ -68,7 +68,7 @@
   .bar { position: fixed; left: 0; right: 0; z-index: 10; display: flex; align-items: center; gap: 1rem; padding: .6rem clamp(1rem, 5vw, 4rem); background: rgba(240,240,230,.94); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
   .bar.top { top: 0; border-bottom: 1px solid var(--line); padding-top: calc(.6rem + env(safe-area-inset-top)); }
   .bar.bottom { bottom: 0; border-top: 1px solid var(--line); padding-bottom: calc(.6rem + env(safe-area-inset-bottom)); }
-  .bar .ico { width: 2.1rem; height: 2.1rem; border: 1px solid var(--line); display: inline-flex; align-items: center; justify-content: center; font-size: .95rem; }
+  .bar .ico { width: 2.1rem; height: 2.1rem; font-size: 1.05rem; border: 1px solid var(--line); display: inline-flex; align-items: center; justify-content: center; font-size: .95rem; }
   .bar .ico:hover, .bar .nav button:hover:not(:disabled), .bar .years button:hover { background: var(--black); color: var(--cream); }
   .bar .nav .pos { cursor: pointer; }
   .bar .nav .pos:hover b { color: var(--aux); }
@@ -271,6 +271,7 @@
   <button class="brand" id="brandBtn" title="Back to the cover">Gruppo Florence <small>Report Film · Sustainability Report 2025</small></button>
 </div>
 <div class="bar bottom">
+  <button class="ico" id="restartBtn" title="Back to the cover, 2025 selected">↺</button>
   <div class="nav" id="nav">
     <button id="prevCard" title="Previous card (←)">‹</button>
     <span class="pos" id="posBtn" title="Open the index"><b id="posNow">00</b> / <span id="posMax">12</span></span>
@@ -1241,9 +1242,10 @@ function closeModal() { modalKind = null; $('explainBtn').classList.remove('on')
 function refreshExplain() { if (modalKind === 'explain') { openModal('explain'); $('exPrev').disabled = cur === 0; $('exNext').disabled = cur === cards.length - 1; } }
 $('posBtn').onclick = () => openModal('index');
 $('brandBtn').onclick = () => goCard(0);
+$('restartBtn').onclick = () => { closeModal(); setYear(YEARS[YEARS.length - 1]); goCard(0); };
 document.querySelectorAll('.starts button').forEach((b) => { b.onclick = () => goCard(Number(b.dataset.card)); });
 // portrait phones: card arrows move to the top bar; landscape and desktop: everything in the bottom bar
-const placeNav = () => { const portrait = window.innerWidth <= 820 && window.innerHeight > window.innerWidth; const host = portrait ? document.querySelector('.bar.top') : document.querySelector('.bar.bottom'); if ($('nav').parentElement !== host) host.insertBefore($('nav'), portrait ? null : host.firstChild); };
+const placeNav = () => { const portrait = window.innerWidth <= 820 && window.innerHeight > window.innerWidth; const host = portrait ? document.querySelector('.bar.top') : document.querySelector('.bar.bottom'); if ($('nav').parentElement !== host) { if (portrait) { host.appendChild($('nav')); } else { host.insertBefore($('nav'), $('restartBtn').nextSibling); } } };
 placeNav(); window.addEventListener('resize', placeNav);
 // landscape: when a card overflows by less than a fifth, shrink its content so the whole card fits without scrolling
 function fitCards() {

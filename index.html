@@ -82,7 +82,9 @@
   .modal .index .k { font-size: .68rem; letter-spacing: 2px; color: var(--aux); font-weight: 700; }
   .modal .index .t { font-family: var(--serif); font-size: 1.05rem; line-height: 1.2; }
   .modal .index .s { grid-column: 2; font-size: .75rem; color: var(--grey); }
-  .bar .brand { font-family: var(--serif); text-transform: uppercase; letter-spacing: .12em; font-size: .85rem; white-space: nowrap; }
+  .bar .brand { font-family: var(--serif); text-transform: uppercase; letter-spacing: .12em; font-size: .85rem; white-space: nowrap; padding: 0; text-align: left; }
+  .bar .brand:hover { color: var(--aux); }
+  .bar.top { padding-top: calc(.5rem + env(safe-area-inset-top)); padding-bottom: .5rem; }
   .bar .brand small { font-family: var(--sans); letter-spacing: 2px; font-size: .62rem; color: var(--grey); margin-left: .6rem; font-weight: 700; }
   .bar .spacer { flex: 1; }
   .bar .hint { font-size: .68rem; color: var(--grey); letter-spacing: 1px; text-transform: uppercase; }
@@ -100,6 +102,7 @@
     .bar { gap: .5rem; padding-left: .8rem; padding-right: .8rem; }
     .bar .brand { font-size: .72rem; letter-spacing: .1em; } .bar .brand small { display: none; }
     .bar.bottom .spacer { display: none; }
+    .bar.top { justify-content: space-between; }
     .bar .years { flex: 1; }
     .bar .years button { flex: 1; padding: .55rem 0; min-height: 2.3rem; }
     .bar .nav button { padding: .35rem .6rem; min-width: 2.2rem; min-height: 2.2rem; }
@@ -185,21 +188,22 @@
   @media (hover: none) { .tip { display: none !important; } }
   .tip .k { color: var(--yellow); text-transform: uppercase; letter-spacing: 1px; font-size: .64rem; display: block; }
   .card > div { min-width: 0; }
+  @media (max-width: 820px) and (orientation: landscape) { .bar.bottom .years { flex: 0 1 auto; } .bar.bottom .years button { padding: .45rem .9rem; } }
+  @media (min-width: 821px) { .bar.bottom .nav { margin-right: .5rem; } }
   @media (max-width: 820px) { .cover h1 { font-size: 2rem; } .cover .lead { font-size: .95rem; } .cover .index { grid-template-columns: 1fr; gap: 0; max-width: none; } }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } .film { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
 <div class="bar top">
-  <div class="brand">Gruppo Florence <small>Report Film · Sustainability Report 2025</small></div>
-  <div class="spacer"></div>
+  <button class="brand" id="brandBtn" title="Back to the cover">Gruppo Florence <small>Report Film · Sustainability Report 2025</small></button>
+</div>
+<div class="bar bottom">
   <div class="nav" id="nav">
     <button id="prevCard" title="Previous card (←)">‹</button>
     <span class="pos" id="posBtn" title="Open the index"><b id="posNow">00</b> / <span id="posMax">12</span></span>
     <button id="nextCard" title="Next card (→)">›</button>
   </div>
-</div>
-<div class="bar bottom">
   <span class="hint">↑ ↓ year · ← → cards</span>
   <div class="spacer"></div>
   <div class="years" id="years" role="group" aria-label="Report year"></div>
@@ -1057,6 +1061,10 @@ mkIndex($('coverIndex'), 1);
 function openModal(which) { $('mIndex').style.display = which === 'index' ? '' : 'none'; $('mHelp').style.display = which === 'help' ? '' : 'none'; $('modal').classList.add('open'); }
 function closeModal() { $('modal').classList.remove('open'); }
 $('posBtn').onclick = () => openModal('index');
+$('brandBtn').onclick = () => goCard(0);
+// portrait phones: card arrows move to the top bar; landscape and desktop: everything in the bottom bar
+const placeNav = () => { const portrait = window.innerWidth <= 820 && window.innerHeight > window.innerWidth; const host = portrait ? document.querySelector('.bar.top') : document.querySelector('.bar.bottom'); if ($('nav').parentElement !== host) host.insertBefore($('nav'), portrait ? null : host.firstChild); };
+placeNav(); window.addEventListener('resize', placeNav);
 $('helpBtn').onclick = () => openModal('help');
 $('modalClose').onclick = closeModal;
 $('modal').onclick = (e) => { if (e.target === $('modal')) closeModal(); };

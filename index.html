@@ -1043,7 +1043,7 @@ function render() {
   }
 }
 
-function setYear(y) { if (y === year) return; year = y; render(); }
+function setYear(y) { if (y === year) return; year = y; render(); fitSoon(); }
 
 // ---------- CHROME: state control (slider, step, play), card nav, index, rail, keys ----------
 const stepYear = (d) => setYear(YEARS[Math.max(0, Math.min(YEARS.length - 1, YEARS.indexOf(year) + d))]);
@@ -1065,6 +1065,20 @@ $('brandBtn').onclick = () => goCard(0);
 // portrait phones: card arrows move to the top bar; landscape and desktop: everything in the bottom bar
 const placeNav = () => { const portrait = window.innerWidth <= 820 && window.innerHeight > window.innerWidth; const host = portrait ? document.querySelector('.bar.top') : document.querySelector('.bar.bottom'); if ($('nav').parentElement !== host) host.insertBefore($('nav'), portrait ? null : host.firstChild); };
 placeNav(); window.addEventListener('resize', placeNav);
+// landscape: when a card overflows by less than a fifth, shrink its content so the whole card fits without scrolling
+function fitCards() {
+  const landscape = window.innerWidth > window.innerHeight;
+  cards.forEach((c) => {
+    [...c.children].forEach((ch) => { ch.style.zoom = ''; });
+    if (!landscape) return;
+    const avail = c.clientHeight - parseFloat(getComputedStyle(c).paddingTop) - parseFloat(getComputedStyle(c).paddingBottom);
+    const need = Math.max(...[...c.children].map((ch) => ch.offsetHeight));
+    if (need > avail && need < avail * 1.22) { const z = Math.max(0.8, avail / need * 0.985); [...c.children].forEach((ch) => { ch.style.zoom = z; }); }
+  });
+}
+let fitT; const fitSoon = () => { clearTimeout(fitT); fitT = setTimeout(fitCards, 120); };
+window.addEventListener('resize', fitSoon);
+document.querySelectorAll('details.rows').forEach((d) => d.addEventListener('toggle', fitSoon));
 $('helpBtn').onclick = () => openModal('help');
 $('modalClose').onclick = closeModal;
 $('modal').onclick = (e) => { if (e.target === $('modal')) closeModal(); };
@@ -1092,6 +1106,9 @@ document.addEventListener('keydown', (e) => {
 $('s2toggle').querySelectorAll('button').forEach((b) => b.onclick = () => { s2mode = b.dataset.m; $('s2toggle').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); render(); });
 $('wsToggle').querySelectorAll('button').forEach((b) => b.onclick = () => { wsFilter = b.dataset.f; render(); });
 render();
+fitCards();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitSoon);
+window.addEventListener('load', fitSoon);
 </script>
 <!-- Umami --><script>try{/[?&#]noumami\b/.test(location.href)&&localStorage.setItem('umami.disabled','1')}catch(e){}</script><script defer src="https://m.aguywithascarf.com/k.js" data-website-id="eebb8dd0-e538-4533-ab76-d8d90eaa084e"></script><!-- End Umami -->
 </body>

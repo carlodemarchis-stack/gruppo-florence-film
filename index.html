@@ -46,7 +46,7 @@
   /* cover */
   .cover { grid-template-columns: 1fr; padding-top: 5rem; }
   .cover .summary .n { color: var(--aux); font-size: .7rem; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; margin: 0 0 .7rem; }
-  .cover .summary .ycols { height: 120px; }
+  .cover .summary .ycols { height: 130px; }
   .cover .summary .grid2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cover .summary .foot { font-size: .74rem; color: var(--grey); line-height: 1.5; margin: .4rem 0 0; }
   @media (orientation: landscape) and (min-width: 821px) { .cover { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: start; padding-top: 4rem; } .cover h1 { font-size: clamp(2rem, 3.4vw, 3.2rem); margin-bottom: 1rem; } .cover .lead { font-size: .95rem; margin-bottom: 1.2rem; } .cover .summary { padding-top: 2.6rem; } .cover .index { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .2rem 1.2rem; } .cover .index button { padding: .4rem 0; } .cover .index .t { font-size: .95rem; } .cover .index .s { display: none; } }
@@ -145,13 +145,19 @@
   .hrow .nr { color: var(--grey); font-weight: 400; font-style: italic; font-size: .75rem; }
 
   /* year columns */
-  .ycols { display: flex; gap: 1.2rem; align-items: flex-end; height: 150px; padding-top: 1.4rem; }
-  .ycol { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; gap: .3rem; cursor: pointer; }
-  .ycol .v { font-size: .78rem; font-weight: 600; }
-  .ycol .b { width: 100%; max-width: 64px; background: var(--mute); transition: height .6s cubic-bezier(.2,.8,.2,1), background .3s; }
-  .ycol.on .b { background: var(--aux); }
-  .ycol .y { font-size: .72rem; color: var(--grey); letter-spacing: 1px; }
-  .ycol.on .y { color: var(--black); font-weight: 700; }
+  .ycols { position: relative; height: 150px; margin: .2rem 0 1.2rem; }
+  .ycols svg.yl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .ylpts { position: absolute; inset: 0; }
+  .ylp { position: absolute; transform: translate(-50%, -50%); padding: 0; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+  .ylp i { width: 9px; height: 9px; border-radius: 50%; background: var(--cream); border: 2px solid var(--aux); display: block; transition: transform .2s, background .2s; }
+  .ylp.on i { background: var(--aux); transform: scale(1.35); }
+  .ylp .v { position: absolute; bottom: 100%; margin-bottom: 4px; font-size: .78rem; font-weight: 600; white-space: nowrap; color: var(--grey); }
+  .ylp.on .v { color: var(--black); font-size: .9rem; }
+  .ylp .y { position: absolute; top: 100%; margin-top: 4px; font-size: .68rem; color: var(--grey); letter-spacing: 1px; white-space: nowrap; }
+  .ylp.on .y { color: var(--black); font-weight: 700; }
+  .card:nth-child(even) .ylp i { background: var(--white); }
+  .ylp:hover i { transform: scale(1.35); }
+  .ylp.tgt i { border-color: var(--yellow); border-style: dashed; } .ylp.tgt { cursor: default; }
 
   /* stacked columns */
   .stack { display: flex; gap: 1.2rem; align-items: flex-end; height: 220px; padding-top: 1.4rem; }
@@ -819,16 +825,26 @@ function hbars(el, items, { fmtv = (v) => fmt(v), maxv } = {}) {
     [...el.children].forEach((c) => { if (!sorted.find((s) => s.key === c.dataset.key)) c.remove(); });
   });
 }
-// three year columns, current highlighted; values by year
+// three-year line with area, baseline near the minimum so the change is visible; click a point to pick the year
 function ycols(el, byYear, { fmtv = (v) => fmt(v), onPick = true } = {}) {
-  const vals = YEARS.map((y) => byYear[y]).filter((v) => v != null); const max = Math.max(...vals, 1e-9);
-  el.innerHTML = '';
-  YEARS.forEach((y) => {
-    const v = byYear[y]; const col = document.createElement('div'); col.className = 'ycol' + (y === year ? ' on' : '');
-    col.innerHTML = `<span class="v">${v == null ? '<span class="nr">n/r</span>' : fmtv(v)}</span><div class="b" style="height:${v == null ? 0 : Math.max(2, v / max * 100)}%"></div><span class="y">${y}</span>`;
-    if (onPick) col.onclick = () => setYear(y);
-    el.appendChild(col);
-  });
+  const pts = YEARS.map((yy) => ({ y: yy, v: byYear[yy] })).filter((p) => p.v != null);
+  const vals = pts.map((p) => p.v);
+  const lo = Math.min(...vals), hi = Math.max(...vals), span = (hi - lo) || Math.abs(hi) || 1;
+  const y0 = lo - span * 0.6, y1 = hi + span * 0.35;
+  const W = 300, H = 120, padL = 26, padR = 26, top = 26, bot = 22;
+  const X = (i) => padL + i * (W - padL - padR) / (YEARS.length - 1);
+  const Y = (v) => top + (y1 - v) / (y1 - y0) * (H - top - bot);
+  const line = pts.map((p) => `${X(YEARS.indexOf(p.y))},${Y(p.v)}`).join(' ');
+  const area = pts.length > 1 ? `M${X(YEARS.indexOf(pts[0].y))},${H - bot} L${line.split(' ').join(' L')} L${X(YEARS.indexOf(pts[pts.length - 1].y))},${H - bot} Z` : '';
+  const cur = pts.find((p) => p.y === year);
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="yl">
+    <defs><linearGradient id="g${el.id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C.aux}" stop-opacity=".28"/><stop offset="1" stop-color="${C.aux}" stop-opacity=".02"/></linearGradient></defs>
+    ${area ? `<path d="${area}" fill="url(#g${el.id})"/>` : ''}
+    ${cur ? `<line x1="${X(YEARS.indexOf(cur.y))}" x2="${X(YEARS.indexOf(cur.y))}" y1="${top - 8}" y2="${H - bot}" stroke="${C.aux}" stroke-opacity=".35" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>` : ''}
+    <polyline points="${line}" fill="none" stroke="${C.aux}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+  </svg>
+  <div class="ylpts">${YEARS.map((yy, i) => { const p = byYear[yy]; const on = yy === year; return `<button class="ylp${on ? ' on' : ''}" style="left:${X(i) / W * 100}%;top:${p == null ? 50 : Y(p) / H * 100}%" data-y="${yy}"><span class="v">${p == null ? 'n/r' : fmtv(p)}</span><i></i><span class="y">${yy}</span></button>`; }).join('')}</div>`;
+  if (onPick) el.querySelectorAll('.ylp').forEach((b) => { b.onclick = () => setYear(Number(b.dataset.y)); });
 }
 // stacked columns; series: [{name,color,byYear}]
 function stack(el, series, { fmtv = (v) => fmt(v), total } = {}) {
@@ -963,9 +979,11 @@ function render() {
     T.appendChild(div);
   });
   $('tgtS12').textContent = (((1 - D.sbti[0].cur[y] / D.sbti[0].base) * 100) / 54.6 * 100).toFixed(0) + '%';
-  ycols($('saCols'), { 2023: null, 2024: D.sa8000[2024], 2025: D.sa8000[2025] }, { fmtv: (v) => v + ' sites' });
-  const sa = $('saCols'); const tgt = document.createElement('div'); tgt.className = 'ycol'; tgt.innerHTML = `<span class="v">40 target</span><div class="b" style="height:100%;background:transparent;border:2px dashed ${C.yellow}"></div><span class="y">2026</span>`; sa.appendChild(tgt);
-  sa.querySelectorAll('.ycol .b').forEach((b, i) => { if (i < 3) b.style.height = (([null, 13, 22][i] || 0) / 40 * 100) + '%'; });
+  // SA8000: certified sites with the 2026 target drawn as a yellow dashed step
+  (() => { const el = $('saCols'); const pts = [[2024, D.sa8000[2024], 'certified'], [2025, D.sa8000[2025], 'certified'], [2026, 40, 'target']]; const W = 300, H = 120, padL = 30, padR = 30, top = 26, bot = 22; const X = (i) => padL + i * (W - padL - padR) / 2; const Y = (v) => top + (44 - v) / 44 * (H - top - bot);
+    el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="yl"><path d="M${X(0)},${H - bot} L${X(0)},${Y(pts[0][1])} L${X(1)},${Y(pts[1][1])} L${X(1)},${H - bot} Z" fill="${C.aux}" fill-opacity=".18"/><polyline points="${X(0)},${Y(pts[0][1])} ${X(1)},${Y(pts[1][1])}" fill="none" stroke="${C.aux}" stroke-width="2" vector-effect="non-scaling-stroke"/><polyline points="${X(1)},${Y(pts[1][1])} ${X(2)},${Y(40)}" fill="none" stroke="${C.yellow}" stroke-width="2" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/></svg>
+    <div class="ylpts">${pts.map((p, i) => `<button class="ylp${p[0] === year ? ' on' : ''}${p[2] === 'target' ? ' tgt' : ''}" style="left:${X(i) / W * 100}%;top:${Y(p[1]) / H * 100}%" data-y="${p[0]}"><span class="v">${p[1]} ${p[2] === 'target' ? 'target' : 'sites'}</span><i></i><span class="y">${p[0]}</span></button>`).join('')}</div>`;
+    el.querySelectorAll('.ylp:not(.tgt)').forEach((b) => { b.onclick = () => setYear(Number(b.dataset.y)); }); })();
 
   // 00 cover summary
   const s3t = (yy) => D.scope3.reduce((t, c) => t + (c[1][yy] || 0), 0) / 1000;
